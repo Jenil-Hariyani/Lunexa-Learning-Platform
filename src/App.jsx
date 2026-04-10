@@ -9,7 +9,7 @@ import Blog from "./Pages/Blog/Blog";
 import ContactSection from "./Pages/Contact/ContactSection";
 import ShowSavedCourses from "./Pages/My Learning/ShowSavedCourses";
 import SingleBlogPage from "./Pages/Blog/SingleBlogPage";
-import ProtectedRoute from "../ProtectedRoute";
+import ProtectedRoute from "./Component/ProtectedRoute";
 
 function App() {
   return (

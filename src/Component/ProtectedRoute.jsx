@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children }) => {
   const { isSignedIn } = useUser();
 
   if (!isSignedIn) {
-    return <Navigate to="/" />; // 👈 home par mokli dese
+    return <Navigate to="/" />;
   }
 
   return children;
