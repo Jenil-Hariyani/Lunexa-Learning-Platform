@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  overflow-x: hidden; /* stops horizontal shift */
+}
+/* Clerk UserButton avatar size fix */
+/* Default (Desktop) */
+.cl-userButtonAvatarBox {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.cl-userButtonAvatarImage {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Mobile View (Screen < 768px) */
+@media (max-width: 768px) {
+  .cl-userButtonAvatarBox {
+    width: 55px !important;
+    height: 55px !important;
+    border: 2px solid #6366f1;
+    border-radius: 50%;
+  }
+}
