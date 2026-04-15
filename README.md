@@ -1,16 +1,69 @@
-# React + Vite
+🎓 Lunexa – Online Learning Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Lunexa is a fully responsive and interactive online learning web application built using React.js and Tailwind CSS.
+It allows users to explore courses, track their learning progress, and test their knowledge through quizzes in a clean and modern UI.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🚀 Live Preview
+🔗 https://lunexa-learning.netlify.app/
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+✨ Core Features :
 
-## Expanding the ESLint configuration
+📚 Course Exploration
+Browse multiple courses categorized by topics with dynamic UI cards.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🎥 YouTube Video Integration
+Each course includes embedded video content for real-time learning experience.
+
+🔐 Authentication System (Clerk)
+Secure login/signup system with protected course access.
+
+🧠 Interactive Quiz System
+Each course includes a quiz with randomly selected questions to test knowledge.
+
+📊 Progress Tracking
+Track completed lessons with local storage and visual progress bar.
+
+📌 Saved Courses (My Learning)
+Users can save courses and continue learning anytime.
+
+▶️ Lesson Unlock System
+Lessons unlock sequentially to ensure structured learning flow.
+
+📱 Responsive Design
+Optimized for mobile, tablet, and desktop screens.
+
+⚡ Smooth UI & Animations
+Built using modern UI practices with animations (Framer Motion).
+
+
+🛠️ Tech Stack
+
+Frontend: React.js, Tailwind CSS
+Routing: React Router DOM
+Authentication: Clerk
+Animations: Framer Motion
+Icons: Lucide React
+State Management: useState & useEffect
+Storage: LocalStorage
+
+
+📌 Key Highlights
+Structured learning flow with lesson unlock system
+Quiz-based knowledge testing
+Persistent progress tracking using localStorage
+Clean and reusable component architecture
+Authentication integrated using Clerk
+Smooth animations and modern UI design
+
+
+👨‍💻 Author
+
+Jenil Hariyani
+GitHub: https://github.com/Jenil-Hariyani
+
+
+⭐ Conclusion
+
+Lunexa demonstrates strong frontend development skills by combining real-world learning features like course management, progress tracking, and quizzes into a modern and user-friendly platform.
