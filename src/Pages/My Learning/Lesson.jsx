@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, PartyPopper, Trophy } from "lucide-react";
+import { ChevronDown, ChevronUp, Trophy } from "lucide-react";
 const Lesson = ({ completedLessons, setCompletedLessons, course }) => {
   const [showAll, setShowAll] = useState(false);
 

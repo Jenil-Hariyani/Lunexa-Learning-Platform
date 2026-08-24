@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CourseCardData from "../Home/CoursesCardData";
 import { GraduationCap, BookOpen, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import Categories from "../Home/Categories";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useClerk, useUser } from "@clerk/clerk-react";
+import { getThumbnailUrl, handleThumbError } from "../../utils/youtube";
 
 const PopularCourses = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useUser();
   const clerk = useClerk();
-  const location = useLocation();
 
   // Only 1 course per category for showcase
   const uniqueCourses = Object.values(
@@ -40,7 +40,7 @@ const PopularCourses = () => {
   const handleCourseClick = (id) => {
     if (!isSignedIn) {
       clerk.openSignIn({
-        afterSignInUrl: `#${location.pathname}`,
+        afterSignInUrl: `/#/course/${id}`,
         appearance: {
           layout: { type: "modal", modalSize: "medium" },
           variables: {
@@ -68,11 +68,6 @@ const PopularCourses = () => {
       navigate(`/course/${id}`);
     }
   };
-
-  useEffect(() => {
-    console.log("All Courses:", CourseCardData);
-    console.log("Unique Courses:", uniqueCourses);
-  }, []);
 
   return (
     <>
@@ -114,9 +109,7 @@ const PopularCourses = () => {
         <div className="max-w-6xl mx-auto bg-white border border-[#e4e7ec] rounded-[22px] p-4 sm:p-6 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 sm:gap-8 md:gap-10">
             {uniqueCourses.map((course, index) => {
-              const videoId = course.video?.split("v=")[1]?.split("&")[0];
-
-              const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+              const thumbnail = getThumbnailUrl(course.video);
 
               return (
                 <motion.div
@@ -134,6 +127,7 @@ const PopularCourses = () => {
                   >
                     <img
                       src={thumbnail}
+                      onError={handleThumbError}
                       alt={course.title}
                       className="w-full h-[200px] object-cover"
                     />

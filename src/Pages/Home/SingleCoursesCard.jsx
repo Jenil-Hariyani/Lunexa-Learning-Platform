@@ -1,24 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BookOpen, Users, Clock, GraduationCap } from "lucide-react";
+import { BookOpen, Clock, GraduationCap } from "lucide-react";
 import CourseCardData from "../Home/CoursesCardData";
 import QuizContainer from "../Home/QuizeContainer";
 import Lesson from "../My Learning/Lesson";
+import { readArray, writeArray } from "../../utils/storage";
+import { getYouTubeId } from "../../utils/youtube";
 
 const SingleCoursePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   // get id by data
   const course = CourseCardData.find((c) => c.id === id);
-  console.log(course);
-
-  const [completedLessons, setCompletedLessons] = useState(
-    JSON.parse(localStorage.getItem(`course-${id}-progress`)) || [],
+  const [completedLessons, setCompletedLessons] = useState(() =>
+    readArray(`course-${id}-progress`),
   );
 
   // lesson ui show section
   const [showLessons, setShowLessons] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+
+  // If Course saved to show lesson button
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (!course) return;
+
+    const savedCourses = readArray("savedCourses");
+    const savedCourse = savedCourses.find((c) => c.id === course.id);
+
+    if (savedCourse) {
+      setShowLessons(true);
+      const progress = readArray(`course-${course.id}-progress`);
+      if (progress.length >= course.lessons) setIsCompleted(true);
+    }
+  }, [course?.id]);
+
+  // if lesson completed show completed lesson ui
+  useEffect(() => {
+    if (!course) return;
+    if (completedLessons.length >= course.lessons) {
+      setIsCompleted(true);
+    }
+    writeArray(`course-${id}-progress`, completedLessons);
+  }, [completedLessons, course?.lessons, id]);
 
   // if Course not show
   if (!course)
@@ -29,47 +53,19 @@ const SingleCoursePage = () => {
     );
 
   // Find Video Id
-  const videoId = course.video.split("v=")[1]?.split("&")[0];
-  console.log("Video Id:", videoId);
-
-  // If Course saved to show lesson button
-  useEffect(() => {
-    window.scrollTo(0, 0);
-
-    const savedCourses = JSON.parse(localStorage.getItem("savedCourses")) || [];
-    const savedCourse = savedCourses.find((c) => c.id === course.id);
-
-    if (savedCourse) {
-      setShowLessons(true);
-      const progress =
-        JSON.parse(localStorage.getItem(`course-${course.id}-progress`)) || [];
-      if (progress.length >= course.lessons) setIsCompleted(true);
-    }
-  }, [course.id]);
-
-  // if lesson completed show completed lesson ui
-  useEffect(() => {
-    if (completedLessons.length >= course.lessons) {
-      setIsCompleted(true);
-    }
-    localStorage.setItem(
-      `course-${course.id}-progress`,
-      JSON.stringify(completedLessons),
-    );
-  }, [completedLessons, course.lessons]);
+  const videoId = getYouTubeId(course.video);
 
   // if click start learning button show lesson button and saved id
   const handleStartLearning = () => {
     setShowLessons(true);
 
-    const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
+    const saved = readArray("savedCourses");
     const exists = saved.find((c) => c.id === course.id);
     if (!exists) {
       saved.push({ id: course.id, completedLessons: [] });
-      localStorage.setItem("savedCourses", JSON.stringify(saved));
+      writeArray("savedCourses", saved);
     }
   };
-  console.log("Features", course.features);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12 font-poppins">

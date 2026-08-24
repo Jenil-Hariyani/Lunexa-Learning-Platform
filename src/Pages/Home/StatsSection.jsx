@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BookOpen, GraduationCap, Star, Layers, Brain } from "lucide-react";
+import { BookOpen, GraduationCap, Layers, Brain } from "lucide-react";
 import { motion } from "framer-motion";
 import TrustedBy from "./TrustedBy";
 

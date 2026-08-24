@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Users, Trash2, Clock } from "lucide-react";
+import { BookOpen, Trash2, Clock } from "lucide-react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import CourseCardData from "../Home/CoursesCardData";
+import { readArray, writeArray } from "../../utils/storage";
+import { getThumbnailUrl, handleThumbError } from "../../utils/youtube";
 
 function ShowSavedCourses() {
   const navigate = useNavigate();
@@ -13,15 +15,14 @@ function ShowSavedCourses() {
 
   useEffect(() => {
     if (isSignedIn) {
-      const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
+      const saved = readArray("savedCourses");
 
       const coursesWithData = saved
         .map((c) => {
           const courseData = CourseCardData.find((d) => d.id === c.id);
           if (!courseData) return null;
 
-          const completedLessons =
-            JSON.parse(localStorage.getItem(`course-${c.id}-progress`)) || [];
+          const completedLessons = readArray(`course-${c.id}-progress`);
 
           return {
             ...courseData,
@@ -37,13 +38,13 @@ function ShowSavedCourses() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  });
+  }, []);
 
   const handleRemoveCourse = (courseId) => {
-    const updatedSaved = JSON.parse(localStorage.getItem("savedCourses")) || [];
+    const updatedSaved = readArray("savedCourses");
     const filteredSaved = updatedSaved.filter((c) => c.id !== courseId);
 
-    localStorage.setItem("savedCourses", JSON.stringify(filteredSaved));
+    writeArray("savedCourses", filteredSaved);
     localStorage.removeItem(`course-${courseId}-progress`);
 
     setSavedCourses((prev) => prev.filter((c) => c.id !== courseId));
@@ -130,9 +131,7 @@ function ShowSavedCourses() {
           const completedCount = course.completedLessons.length;
           const progress = Math.round((completedCount / totalLessons) * 100);
 
-          const videoId = course.video?.split("v=")[1]?.split("&")[0];
-
-          const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+          const thumbnail = getThumbnailUrl(course.video);
 
           return (
             <div
@@ -142,6 +141,7 @@ function ShowSavedCourses() {
               <img
                 src={thumbnail}
                 onClick={() => navigate(`/course/${course.id}`)}
+                onError={handleThumbError}
                 alt={course.title}
                 className="w-full h-[200px] object-cover cursor-pointer"
               />

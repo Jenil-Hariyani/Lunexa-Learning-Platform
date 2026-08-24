@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { SiTailwindcss } from "react-icons/si";
 import PopularCourses from "../Home/PopularCourses";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser, useClerk } from "@clerk/clerk-react";
 // Typing Words
 const words = [
@@ -56,11 +56,11 @@ const HeroSection = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useUser();
   const clerk = useClerk();
-  const location = useLocation();
 
   useEffect(() => {
     let i = 0; // index for character
     const currentWord = words[wordIndex]; // current word to type
+    let pauseTimeout;
 
     // set text word one by one
     const typing = setInterval(() => {
@@ -69,13 +69,16 @@ const HeroSection = () => {
 
       if (i > currentWord.length) {
         clearInterval(typing); // typing complete → stop interval
-        setTimeout(() => {
+        pauseTimeout = setTimeout(() => {
           setWordIndex((prev) => (prev + 1) % words.length); // loop back to first word after last.
         }, 1200);
       }
     }, 100); // 100ms per character
 
-    return () => clearInterval(typing); // stop interval if component unmount
+    return () => {
+      clearInterval(typing); // stop interval if component unmount
+      clearTimeout(pauseTimeout);
+    };
   }, [wordIndex]);
 
   useEffect(() => {
@@ -85,7 +88,7 @@ const HeroSection = () => {
   const handleStartClick = () => {
     if (!isSignedIn) {
       clerk.openSignIn({
-        afterSignInUrl: `#${location.pathname}`,
+        afterSignInUrl: "/#/courses",
         appearance: {
           layout: { type: "modal", modalSize: "medium" },
           variables: {

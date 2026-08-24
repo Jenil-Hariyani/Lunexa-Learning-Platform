@@ -16,7 +16,6 @@ const ContactSection = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     setSubmitted(true);
     setFormData({ name: "", email: "", message: "" });
   };

@@ -1,18 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useClerk, useUser } from "@clerk/clerk-react";
 
 const CTASection = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useUser();
   const clerk = useClerk();
-  const location = useLocation();
 
   const handleGetStarted = () => {
     if (!isSignedIn) {
       clerk.openSignIn({
-        afterSignInUrl: `#${location.pathname}`,
+        afterSignInUrl: "/#/courses",
         appearance: {
           layout: { type: "modal", modalSize: "medium" },
           variables: {

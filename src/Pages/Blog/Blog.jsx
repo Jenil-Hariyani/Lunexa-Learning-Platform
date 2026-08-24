@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BlogData } from "./BlogData";
 import { useClerk, useUser } from "@clerk/clerk-react";
+import { getThumbnailUrl, handleThumbError } from "../../utils/youtube";
 
 const Blog = () => {
   const navigate = useNavigate();
-  const [featuredPost, setFeaturedPost] = useState(BlogData[0]);
+  const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [isBannerPaused, setIsBannerPaused] = useState(false);
   const [visiblePosts, setVisiblePosts] = useState(4);
   const { isSignedIn } = useUser();
   const clerk = useClerk();
-  const location = useLocation();
 
-  // Banner auto-scroll
+  const featuredPost = BlogData[featuredIndex];
+
+  // Banner auto-scroll (stable interval, pauses on hover)
   useEffect(() => {
+    if (isBannerPaused) return;
     const interval = setInterval(() => {
-      const nextIndex = (BlogData.indexOf(featuredPost) + 1) % BlogData.length;
-      setFeaturedPost(BlogData[nextIndex]);
+      setFeaturedIndex((prev) => (prev + 1) % BlogData.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, [featuredPost]);
+  }, [isBannerPaused]);
 
   const loadMore = () => setVisiblePosts((prev) => prev + 4);
 
   const handleProtectedClick = (id) => {
     if (!isSignedIn) {
       clerk.openSignIn({
-        afterSignInUrl: `#${location.pathname}`,
+        afterSignInUrl: `/#/blog/${id}`,
         appearance: {
           layout: { type: "modal", modalSize: "medium" },
           variables: {
@@ -55,7 +57,9 @@ const Blog = () => {
     }
   };
 
-  useEffect(() => window.scrollTo(0, 0), []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <section className="bg-[#f4f6fb] pt-8 md:pt-10 pb-20 px-6 md:px-20">
@@ -81,31 +85,23 @@ const Blog = () => {
       </div>
 
       {/* Featured Banner */}
-      <motion.div
-        key={featuredPost.id}
+      <div
         onClick={() => handleProtectedClick(featuredPost.id)}
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
+        onMouseEnter={() => setIsBannerPaused(true)}
+        onMouseLeave={() => setIsBannerPaused(false)}
         className="relative max-w-6xl mx-auto mb-16 rounded-3xl overflow-hidden shadow-2xl cursor-pointer group"
       >
         {/* YouTube Thumbnail */}
-        <motion.img
-          src={`https://img.youtube.com/vi/${
-            featuredPost.video?.split("v=")[1]?.split("&")[0]
-          }/maxresdefault.jpg`}
+        <img
+          src={getThumbnailUrl(featuredPost.video)}
+          onError={handleThumbError}
+          alt={featuredPost.title}
           className="w-full h-[220px] sm:h-[300px] md:h-[450px] object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-          whileHover={{ scale: 1.08 }}
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
 
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-10 right-4 text-white"
-        >
+        <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-10 right-4 text-white">
           <span className="bg-blue-600/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold shadow">
             {featuredPost.category}
           </span>
@@ -115,28 +111,24 @@ const Blog = () => {
           <p className="mt-1 sm:mt-2 text-xs sm:text-sm md:text-base text-gray-200 line-clamp-2 sm:line-clamp-3 drop-shadow">
             {featuredPost.excerpt}
           </p>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       {/* Blog Grid */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 sm:gap-8 md:gap-10">
         {BlogData.slice(0, visiblePosts).map((post) => {
-          const videoId = post.video?.split("v=")[1]?.split("&")[0];
-          const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+          const thumbnail = getThumbnailUrl(post.video);
 
           return (
-            <motion.div
+            <div
               key={post.id}
               onClick={() => handleProtectedClick(post.id)}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: post.id * 0.1 }}
               className="group bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
             >
               <div className="relative">
                 <img
                   src={thumbnail}
+                  onError={handleThumbError}
                   alt={post.title}
                   className="w-full h-48 sm:h-56 md:h-52 object-cover"
                 />
@@ -150,7 +142,7 @@ const Blog = () => {
                 </h3>
                 <p className="text-gray-500 mt-2 text-sm">{post.excerpt}</p>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>

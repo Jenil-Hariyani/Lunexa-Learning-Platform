@@ -28,7 +28,7 @@ const Navbar = () => {
   // Open SignIn Modal with styling
   const openStyledSignIn = () => {
     clerk.openSignIn({
-      afterSignInUrl: `#${location.pathname}`,
+        afterSignInUrl: `/#${location.pathname}`,
       appearance: {
         layout: { type: "modal", modalSize: "medium" },
         variables: {
@@ -65,6 +65,9 @@ const Navbar = () => {
   // If Open Menu So block scrolling
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isOpen]);
 
   return (
@@ -111,15 +114,7 @@ const Navbar = () => {
             </SignedOut>
 
             <SignedIn>
-              <div className="flex items-center space-x-4">
-                <UserButton afterSignOut={handleLogout} />
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-600 text-white px-5 py-2 rounded-full"
-                >
-                  Logout
-                </button>
-              </div>
+              <UserButton afterSignOutUrl="/" />
             </SignedIn>
           </div>
 

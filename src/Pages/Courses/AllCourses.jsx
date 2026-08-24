@@ -3,8 +3,9 @@ import { useEffect } from "react";
 import { CourseCardData } from "../Home/CoursesCardData";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BookOpen, Clock, Users } from "lucide-react";
+import { BookOpen, Clock } from "lucide-react";
 import { useClerk, useUser } from "@clerk/clerk-react";
+import { getThumbnailUrl, handleThumbError } from "../../utils/youtube";
 
 const AllCourses = ({ search, category }) => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const AllCourses = ({ search, category }) => {
   const handleCourseClick = (id) => {
     if (!isSignedIn) {
       clerk.openSignIn({
-        afterSignInUrl: `#${location.pathname}`,
+        afterSignInUrl: `/#${location.pathname}`,
         appearance: {
           layout: { type: "modal", modalSize: "medium" },
           variables: {
@@ -85,9 +86,7 @@ const AllCourses = ({ search, category }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 sm:gap-8 md:gap-10">
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course, index) => {
-              const videoId = course.video?.split("v=")[1]?.split("&")[0];
-
-              const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+              const thumbnail = getThumbnailUrl(course.video);
 
               return (
                 <motion.div
@@ -105,6 +104,7 @@ const AllCourses = ({ search, category }) => {
                   >
                     <img
                       src={thumbnail}
+                      onError={handleThumbError}
                       alt={course.title}
                       className="w-full h-48 sm:h-56 md:h-52 object-cover"
                     />

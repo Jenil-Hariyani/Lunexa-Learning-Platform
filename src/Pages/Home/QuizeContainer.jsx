@@ -4,6 +4,7 @@ import { CheckCircle } from "lucide-react";
 
 const QuizContainer = ({ course, category }) => {
   const [questions, setQuestions] = useState([]);
+  const [quizAvailable, setQuizAvailable] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [score, setScore] = useState(0);
@@ -11,29 +12,28 @@ const QuizContainer = ({ course, category }) => {
 
   // load quize data
   useEffect(() => {
-    if (!category || !course.id) return;
+    if (!category || !course?.id) {
+      setQuizAvailable(false);
+      return;
+    }
 
     const courseNumber = course.id.split("-")[1];
     const categoryKey = category.toLowerCase().replace(/\s/g, "");
     const categoryDataArray = quizData[categoryKey];
 
-    console.log(
-      "Course No:",
-      courseNumber,
-      "Category:",
-      categoryKey,
-      "CategoryDataArray:",
-      categoryDataArray,
-    );
-
-    if (!categoryDataArray || categoryDataArray.length === 0) return;
+    if (!categoryDataArray || categoryDataArray.length === 0) {
+      setQuizAvailable(false);
+      return;
+    }
 
     // find Exact course id
     const courseKey = `course${courseNumber}`;
     const courseData = categoryDataArray[0][courseKey];
-    console.log("Course key:", courseKey, "CourseData:", courseData);
 
-    if (!courseData) return;
+    if (!courseData || courseData.length === 0) {
+      setQuizAvailable(false);
+      return;
+    }
 
     // random question select
     const shuffled = [...courseData].sort(() => 0.5 - Math.random());
@@ -52,6 +52,14 @@ const QuizContainer = ({ course, category }) => {
     }
     setSelectedOption("");
   };
+
+  // if quiz data missing for this course
+  if (!quizAvailable)
+    return (
+      <p className="text-center text-gray-500 py-6">
+        Quiz not available for this course yet.
+      </p>
+    );
 
   // if question not load show loading
   if (questions.length === 0)

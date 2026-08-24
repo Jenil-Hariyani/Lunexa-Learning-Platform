@@ -6,15 +6,22 @@ import { SiTailwindcss } from "react-icons/si";
 
 import Stats from "./StatsSection";
 import { FaHtml5 } from "react-icons/fa6";
+import { CourseCardData } from "./CoursesCardData";
 
 const categories = [
   { name: "REACT JS", icon: <FaReact size={24} /> },
   { name: "TAILWIND CSS", icon: <SiTailwindcss size={24} /> },
-  { name: "PYTHON", icon: <DiPython size={24} /> },
+  { name: "PYTHON", icon: <DiPython size={24} />  },
   { name: "HTML", icon: <FaHtml5 size={24} /> },
   { name: "JAVASCRIPT", icon: <DiJavascript size={24} /> },
   { name: "CSS", icon: <DiCss3 size={24} /> },
 ];
+
+const normalize = (value) => value.toLowerCase().replace(/\s/g, "");
+
+const courseCountFor = (name) =>
+  CourseCardData.filter((c) => normalize(c.category) === normalize(name))
+    .length;
 
 const Categories = () => {
   return (
@@ -73,7 +80,7 @@ const Categories = () => {
 
               {/* Courses */}
               <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">
-                4+ Courses
+                {courseCountFor(cat.name)} Courses
               </p>
 
               {/* Underline */}

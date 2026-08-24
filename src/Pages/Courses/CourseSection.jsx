@@ -12,13 +12,10 @@ function CourseSection() {
 
   // Button click handler applies the filter
   const handleSearchClick = () => {
-    console.log("Button clicked! tempSearch:", tempSearch);
     if (tempSearch.trim() === "") {
       setSearch("");
-      console.log("Search cleared to show all courses");
     } else {
       setSearch(tempSearch);
-      console.log("Search set to:", tempSearch);
     }
   };
 

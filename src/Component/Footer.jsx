@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaLinkedinIn, FaInstagram, FaGithub } from "react-icons/fa";
 
 const Footer = () => {
@@ -27,33 +28,30 @@ const Footer = () => {
           <h3 className="font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2">
             <li>
-              <a href="/" className="hover:text-blue-500 transition">
+              <Link to="/" className="hover:text-blue-500 transition">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#courses" className="hover:text-blue-500 transition">
+              <Link to="/courses" className="hover:text-blue-500 transition">
                 Courses
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="#blog" className="hover:text-blue-500 transition">
+              <Link to="/blog" className="hover:text-blue-500 transition">
                 Blog
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#/my-learning"
-                className="hover:text-blue-500 transition"
-              >
+              <Link to="/my-learning" className="hover:text-blue-500 transition">
                 MyLearning
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#contact" className="hover:text-blue-500 transition">
+              <Link to="/contact" className="hover:text-blue-500 transition">
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

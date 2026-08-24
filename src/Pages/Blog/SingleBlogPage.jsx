@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { BlogData } from "./BlogData";
-import { FaUserAlt, FaCalendarAlt, FaComments } from "react-icons/fa";
 
 const SingleBlogPage = () => {
   const { id } = useParams();

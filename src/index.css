@@ -1,11 +1,32 @@
 @import "tailwindcss";
 
+@theme {
+  --font-poppins: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
 * {
   font-family: 'Poppins', sans-serif;
 }
 body {
   overflow-x: hidden; /* stops horizontal shift */
 }
+
+/* Slow pulse for CTA glow circles (Tailwind v4 has no config file) */
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
 /* Clerk UserButton avatar size fix */
 /* Default (Desktop) */
 .cl-userButtonAvatarBox {
